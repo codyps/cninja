@@ -13,6 +13,28 @@
 
    bin hello-world hello-world.c
 
+## Why does this exist?
+
+After spending a long time trying to get a pure gnu make solution to my build needs, I put this together instead.
+
+By leaning on ninja, we can get a few things that are hard to get with make:
+
+ - have outputs depend on the command that generated them (eg: changing the
+   CFLAGS causes a rebuild)
+ - Parallelization auto-sized for the machine doing the build
+
+The above are possible to get working with make, but involve both quite a bit
+of make code and adding them results in a certain amount of performance loss. For example, for regen on flag changes to be implimented generally, a shell script has to
+be run for every target, regardless of whether make thinks it's up to date or
+not. Linux's build setup has an example of that approach. 
+
+## Principles and Goals
+
+ - Parallelize everything, including things normally run directly by autotools
+   configure scripts.
+ - Allow overrides on a per-file and per-target level. There shouldn't be
+   anything we can't build due to needing a special flag for 1 file and not
+   another.
 
 ## Todo
 
