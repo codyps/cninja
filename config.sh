@@ -37,6 +37,11 @@ cflag_x () {
 	done
 }
 
+die () {
+	>&2 echo "Error: $*"
+	exit 1
+}
+
 COMMON_FLAGS="$(cflag_x "" -fsanitize=address -flto -fsanitize=undefined -fvar-tracking-assignments)"
 : ${CFLAGS:="${COMMON_FLAGS} -ggdb3 -Os"}
 
@@ -125,6 +130,9 @@ e_if() {
 }
 
 bin () {
+	if [ "$#" -lt 2 ]; then
+		die "'bin $1' has to have some source"
+	fi
 	out="$1"
 	shift
 	out_var="${out/./_}"
