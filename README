@@ -2,7 +2,11 @@
 
 ## How To
 
- - Include cninja as a submodule or copy the pieces you need into your project
+ - Copy cninja's stuff into your project:
+
+    $ cd my_project
+    $ /path-to-cninja/bin/cninja-import
+
  - Create a `configure` script that sources cninja's `config.sh`
 
     #! /bin/sh
@@ -11,7 +15,7 @@
 
  - Specify your binaries and their sources
 
-   bin hello-world hello-world.c
+    bin hello-world hello-world.c
 
 ## Why does this exist?
 
