@@ -17,13 +17,20 @@
 # endif
 #endif
 
+
 #ifndef HAVE_LITTLE_ENDIAN
 # ifdef HAVE_BIG_ENDIAN
 #  define HAVE_LITTLE_ENDIAN 0
 # else
-#  warning "No endian detected, try expanding tests"
-#  define HAVE_LITTLE_ENDIAN 0
-#  define HAVE_BIG_ENDIAN 0
+/* tcc is mean and doesn't give us any hints. Thankfully, it only supports LE */
+#  ifdef __TINYC__
+#   define HAVE_LITTLE_ENDIAN 1
+#   define HAVE_BIG_ENDIAN 0
+#  else
+#   warning "No endian detected, try expanding tests"
+#   define HAVE_LITTLE_ENDIAN 0
+#   define HAVE_BIG_ENDIAN 0
+#  endif
 # endif
 #else
 # ifndef HAVE_BIG_ENDIAN
