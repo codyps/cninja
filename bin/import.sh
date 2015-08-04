@@ -55,6 +55,6 @@ fx () {
 }
 
 D () {
-	rsync -r  "$d/$1/" "$1/"
+	rsync -r --delete "$d/$1/" "$1/"
 }
 
