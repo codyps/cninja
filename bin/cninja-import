@@ -7,6 +7,7 @@ URL="https://github.com/jmesmon/cninja.git"
 . $(dirname $0)/import.sh
 
 f "$F"
+fx build
 if [ -n "${WANT_CONFIG_H:-}" ] || [ -e config_h_gen ]; then
 	fx if_compiles
 	fx config_h_gen
