@@ -8,6 +8,9 @@ URL="https://github.com/jmesmon/cninja.git"
 
 f "$F"
 fx build
+if ! [ -e configure ]; then
+	f configure
+fi
 if [ -n "${WANT_CONFIG_H:-}" ] || [ -e config_h_gen ]; then
 	fx if_compiles
 	fx config_h_gen
