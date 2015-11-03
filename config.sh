@@ -48,10 +48,12 @@ die () {
 	exit 1
 }
 
-COMMON_FLAGS="$(cflag_x "" -fsanitize=address -flto -fsanitize=undefined -fvar-tracking-assignments)"
-if ! [ -n "${NO_CFLAGS:-}" ]; then
-	: ${CFLAGS:="${ALL_CFLAGS} ${COMMON_FLAGS} -ggdb3 -Os"}
-fi
+: ${EXTRA_FLAGS=}
+: ${SANITIZE_FLAGS="-fsanitize=address"}
+: ${DEBUG_FLAGS="-ggdb3"}
+: ${LTO_FLAGS="-flto"}
+COMMON_FLAGS="$(cflag_x "" ${SANITIZE_FLAGS} ${LTO_FLAGS} -fsanitize=undefined -fvar-tracking-assignments)"
+: ${CFLAGS="${ALL_CFLAGS} ${COMMON_FLAGS} -Os ${DEBUG_FLAGS} ${EXTRA_FLAGS}"}
 
 # Without LIB_CFLAGS
 : ${HOST_CFLAGS:=${CFLAGS:-}}
@@ -59,7 +61,7 @@ fi
 CFLAGS="-DCFG_GIT_VERSION=${GIT_VER} -I. ${LIB_CFLAGS} ${CFLAGS:-}"
 
 : ${LDFLAGS:="${COMMON_FLAGS}"}
-LDFLAGS="${LIB_LDFLAGS} ${LDFLAGS}"
+LDFLAGS="${LIB_LDFLAGS} ${LDFLAGS} ${DEBUG_FLAGS}"
 
 CONFIG_H_GEN=./config_h_gen
 
