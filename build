@@ -1,4 +1,8 @@
 #! /bin/sh
 cd $(dirname $0)
 ./configure
-ninja "$@"
+ninja=ninja
+if which ninja-build >/dev/null 2>&1; then
+  ninja=ninja-build
+fi
+"$ninja" "$@"
