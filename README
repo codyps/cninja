@@ -30,7 +30,7 @@ By leaning on ninja, we can get a few things that are hard to get with make:
 The above are possible to get working with make, but involve both quite a bit
 of make code and adding them results in a certain amount of performance loss. For example, for regen on flag changes to be implimented generally, a shell script has to
 be run for every target, regardless of whether make thinks it's up to date or
-not. Linux's build setup has an example of that approach. 
+not. Linux's build setup has an example of that approach.
 
 ## Principles and Goals
 
@@ -42,7 +42,8 @@ not. Linux's build setup has an example of that approach.
 
 ## Todo
 
- - auto-vendor (pull into other source tree) script for those avoiding submodules
  - A way to handle global installs
  - A general way to override pkg-config sourced libraries
  - Push config.h into build dirs!
+ - Handling of generated files, some of which are build global & some of which
+   are target specific
