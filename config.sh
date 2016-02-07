@@ -68,7 +68,7 @@ CONFIG_H_GEN=./config_h_gen
 CONFIGS=""
 
 # Check if compiler likes -MMD -MF
-if $CC $CFLAGS -MMD -MF /dev/null -x c /dev/null -o /dev/null >/dev/null 2>&1; then
+if $CC $CFLAGS -MMD -MF /dev/null -c -x c /dev/null -o /dev/null >/dev/null 2>&1; then
 	DEP_LINE="  depfile = \$out.d"
 	DEP_FLAGS="-MMD -MF \$out.d"
 else
