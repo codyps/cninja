@@ -87,7 +87,7 @@ ldflags = $LDFLAGS
 
 rule cc
   command = \$cc \$cflags $DEP_FLAGS  -c \$in -o \$out
-  $DEP_LINE
+$DEP_LINE
 
 rule ccld
   command = \$cc \$ldflags -o \$out \$in
