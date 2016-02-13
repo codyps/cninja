@@ -1,5 +1,4 @@
 # ex: sts=8 sw=8 ts=8 noet
-set -o pipefail >/dev/null || true
 set -eu
 
 : ${CROSS_COMPILER:=}
