@@ -1,5 +1,6 @@
 #! /bin/sh
-set -euf -o pipefail
+set -o pipefail >/dev/null || true
+set -euf
 
 if [ $# -lt 4 ]; then
 	>&2 echo "Usage: $0 <input-file> <success-text> <failure-text> <cc> <cflags>..."
