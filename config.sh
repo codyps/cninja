@@ -168,7 +168,6 @@ bin () {
 build $out : ccld $(to_obj "$@")
 EOF
 	BINS="$BINS $out"
-	echo "ADD BIN $BINS" >/dev/stderr
 }
 BINS=""
 
