@@ -1,5 +1,5 @@
 # ex: sts=8 sw=8 ts=8 noet
-set -eu -o pipefail
+set -eu
 
 : ${CROSS_COMPILER:=}
 : ${HOST_CC:=cc}
@@ -25,8 +25,8 @@ LIB_LDFLAGS="${LIB_LDFLAGS:-} ${PKGCONFIG_LDFLAGS}"
 ALL_CFLAGS="${WARN_FLAGS}"
 
 if_runs () {
-	local y=$1
-	local n=$2
+	local y="$1"
+	local n="$2"
 	shift 2
 	"$@" >/dev/null 2>&1 && printf "%s" "$y" || printf "%s" "$n"
 }
@@ -157,7 +157,7 @@ bin () {
 	fi
 	out="$1"
 	shift
-	out_var="${out/./_}"
+	out_var=$(printf '%s' "$out" | sed 's/./_/')
 
 	for s in "$@"; do
 		echo "build $(to_obj "$s"): cc $s | $(e_if $CONFIG_H config.h)"
@@ -168,12 +168,13 @@ bin () {
 build $out : ccld $(to_obj "$@")
 EOF
 	BINS="$BINS $out"
+	echo "ADD BIN $BINS" >/dev/stderr
 }
 BINS=""
 
 end_of_ninja () {
 	echo build build.ninja : ninja_gen $CONFIGURE_DEPS
-	echo default ${BINS}
+	echo default $BINS
 }
 
 trap end_of_ninja EXIT
