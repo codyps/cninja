@@ -35,7 +35,6 @@ i () {
 		esac
 	fi
 
-	local hash=$(cd $d; git show --pretty=format:%H $fn)
 	local ver=$(cd $d; git describe --always --dirty=+)
 	local tmp=`mktemp --tmpdir base.mk.XXXXXXXXX`
 
