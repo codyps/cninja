@@ -9,7 +9,7 @@ set -eu
 : ${PKGCONFIG:=pkg-config}
 : ${WARN_FLAGS_C:="-Wstrict-prototypes -Wmissing-prototypes -Wold-style-definition -Wmissing-declarations -Wbad-function-cast"}
 : ${WARN_FLAGS:="-Wall -Wundef -Wshadow -Wcast-align -Wwrite-strings -Wextra -Werror=attributes -Wno-missing-field-initializers ${WARN_FLAGS_C}"}
-: ${GIT_VER:=$(${GIT:-git} describe --dirty=+ --always --abbrev=0 2>/dev/null || echo "+")}
+: ${GIT_VER:=$(${GIT:-git} describe --dirty=+ --always 2>/dev/null || echo "+")}
 
 if [ -n "${PKGCONFIG_LIBS:=}" ]; then
 	PKGCONFIG_CFLAGS="$(${PKGCONFIG} --cflags ${PKGCONFIG_LIBS})"
