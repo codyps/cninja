@@ -184,16 +184,17 @@ e_if() {
 	fi
 }
 
-# <src> <target> [<act>]
+# <target> <src> [<act>]
 # uses: CONFIG_H
 obj() {
-	local s=$1
-	local out=$2
+	local target=$1
+	local s=$2
 	shift
 	shift
 	local act=cc
 	if [ $# -ne 0 ]; then
 		act=$1
+		shift
 	fi
 
 	cat <<EOF
@@ -229,13 +230,16 @@ add_test_dir() {
 		b="$(basename "$f")"
 		case "$b" in
 		compile*.c)
-			obj "$b" "$target"
+			obj "$target" "$b"
+			echo "default $(to_obj "$target" "$b")"
 			;;
 		compile_fail*.c)
-			obj "$b" "$target" cc_fail
+			obj "$target" "$b" cc_fail
+			echo "default $(to_obj "$target" "$b")"
 			;;
 		run*.c)
-			obj "$b" "$target"
+			obj "$target" "$b"
+			echo "default $(to_obj "$target" "$b")"
 			>&2 echo "run test not supported, will only compile $f"
 			;;
 		api*.c)
