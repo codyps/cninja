@@ -268,7 +268,9 @@ add_module() {
 
 end_of_ninja () {
 	echo build build.ninja : ninja_gen $CONFIGURE_DEPS
-	echo default $BINS
+	if [ -n "$BINS" ]; then
+		echo default $BINS
+	fi
 }
 
 trap end_of_ninja EXIT
