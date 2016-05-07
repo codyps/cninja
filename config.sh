@@ -1,6 +1,8 @@
 # ex: sts=8 sw=8 ts=8 noet
 set -eu
 
+D="$(dirname "$0")"
+
 : ${CROSS_COMPILER:=}
 : ${HOST_CC:=cc}
 : ${CC:=${CROSS_COMPILER}cc}
@@ -113,6 +115,10 @@ rule cc
   command = \$cc \$cflags $DEP_FLAGS  -c \$in -o \$out
 $DEP_LINE
 
+rule cc_fail
+  command = ! \$cc \$cflags $DEP_FLAGS -c \$in -o \$out
+$DEP_LINE
+
 rule ccld
   command = \$cc \$ldflags -o \$out \$in
 
@@ -135,10 +141,13 @@ to_out () {
   done
 }
 
+# <target> <src-file>...
 to_obj () {
-  for i in "$@"; do
-    printf "%s " ".build-$out/$i.o"
-  done
+	local target="$1"
+	shift
+	for i in "$@"; do
+		printf "%s " ".build-$target/$i.o"
+	done
 }
 
 _ev () {
@@ -175,25 +184,82 @@ e_if() {
 	fi
 }
 
+# <src> <target> [<act>]
+# uses: CONFIG_H
+obj() {
+	local s=$1
+	local out=$2
+	shift
+	shift
+	local act=cc
+	if [ $# -ne 0 ]; then
+		act=$1
+	fi
+
+	cat <<EOF
+build $(to_obj "$out" "$s"): $act $s | $(e_if $CONFIG_H config.h)
+  cflags = \$cflags -I.build-$out
+EOF
+}
+
 bin () {
 	if [ "$#" -lt 2 ]; then
 		die "'bin $1' has to have some source"
 	fi
-	out="$1"
+	local out="$1"
 	shift
-	out_var=$(printf '%s' "$out" | sed 's/./_/')
+	local out_var=$(printf '%s' "$out" | sed 's/./_/')
 
 	for s in "$@"; do
-		echo "build $(to_obj "$s"): cc $s | $(e_if $CONFIG_H config.h)"
-		echo "  cflags = \$cflags -I.build-$out"
+		obj "$s" "$out"
 	done
 
 	cat <<EOF
-build $out : ccld $(to_obj "$@")
+build $out : ccld $(to_obj "$out" "$@")
 EOF
 	BINS="$BINS $out"
 }
 BINS=""
+
+# <target-name> <path-to-dir>
+add_test_dir() {
+	local target="$1/test"
+	local f="$2"
+	for f in "$f"/*; do
+		b="$(basename "$f")"
+		case "$b" in
+		compile*.c)
+			obj "$b" "$target"
+			;;
+		compile_fail*.c)
+			obj "$b" "$target" cc_fail
+			;;
+		run*.c)
+			>&2 echo "run test not supported, skipped $f"
+			;;
+		api*.c)
+			>&2 echo "api test not supported, skipped $f"
+			;;
+		esac
+	done
+}
+
+add_module() {
+	local m="$1"
+	local f
+	for f in "$D/$1"/*; do
+		b="$(basename "$f")"
+		if [ -d "$f" ]; then
+			if [ "$b" = test ]; then
+				add_test_dir "$m" "$f"
+			else
+				>&2 echo unknown dir $f
+			fi
+		else
+			>&2 echo file $f
+		fi
+	done
+}
 
 end_of_ninja () {
 	echo build build.ninja : ninja_gen $CONFIGURE_DEPS
