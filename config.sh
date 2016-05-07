@@ -230,16 +230,16 @@ add_test_dir() {
 		b="$(basename "$f")"
 		case "$b" in
 		compile*.c)
-			obj "$target" "$b"
-			echo "default $(to_obj "$target" "$b")"
+			obj "$target" "$f"
+			echo "default $(to_obj "$target" "$f")"
 			;;
 		compile_fail*.c)
-			obj "$target" "$b" cc_fail
-			echo "default $(to_obj "$target" "$b")"
+			obj "$target" "$f" cc_fail
+			echo "default $(to_obj "$target" "$f")"
 			;;
 		run*.c)
-			obj "$target" "$b"
-			echo "default $(to_obj "$target" "$b")"
+			obj "$target" "$f"
+			echo "default $(to_obj "$target" "$f")"
 			>&2 echo "run test not supported, will only compile $f"
 			;;
 		api*.c)
