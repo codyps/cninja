@@ -156,13 +156,13 @@ _ev () {
 
 config () {
 	local configs=""
-	for i in config_h/*.c; do
+	for i in "$D"/config_h/*.c; do
 		local name=".config.h-$i-frag"
-		echo "build $name : config_h_frag $i | ./if_compiles ${CONFIG_H_GEN}"
+		echo "build $name : config_h_frag $i | "$D"/if_compiles ${CONFIG_H_GEN}"
 		configs="$configs $name"
 	done
 
-	echo "build config.h : combine config_h/prefix.h $configs config_h/suffix.h"
+	echo "build config.h : combine $D/config_h/prefix.h $configs $D/config_h/suffix.h"
 }
 
 if [ -e "config_h" ]; then
