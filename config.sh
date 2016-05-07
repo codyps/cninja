@@ -198,8 +198,8 @@ obj() {
 	fi
 
 	cat <<EOF
-build $(to_obj "$out" "$s"): $act $s | $(e_if $CONFIG_H config.h)
-  cflags = \$cflags -I.build-$out
+build $(to_obj "$target" "$s"): $act $s | $(e_if $CONFIG_H config.h)
+  cflags = \$cflags -I.build-$target
 EOF
 }
 
