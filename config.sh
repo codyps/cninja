@@ -235,7 +235,8 @@ add_test_dir() {
 			obj "$b" "$target" cc_fail
 			;;
 		run*.c)
-			>&2 echo "run test not supported, skipped $f"
+			obj "$b" "$target"
+			>&2 echo "run test not supported, will only compile $f"
 			;;
 		api*.c)
 			>&2 echo "api test not supported, skipped $f"
