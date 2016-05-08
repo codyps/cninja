@@ -258,9 +258,18 @@ build $target : ccld_host $@
 EOF
 }
 
+host_run() {
+	>&2 echo "warning: we don't currently run tests"
+}
+
+# <target> <file>
 add_run_test() {
-	host_bin "$target" "$f"
-	host_run "$target" "$f"
+	local target=$1
+	local f=$2
+	local b=$(basename $f .c)
+
+	host_bin "$target/$b" "$f"
+	host_run "$target/$b" "$f"
 }
 
 # Add a set of tests based on source files in a given directory
