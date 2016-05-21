@@ -95,6 +95,8 @@ CONFIG_H_GEN=./config_h_gen
 
 CONFIGS=""
 
+: ${CPPFLAGS=}
+
 # Check if compiler likes -MMD -MF
 if $CC $CFLAGS -MMD -MF /dev/null -c -x c /dev/null -o /dev/null >/dev/null 2>&1; then
 	DEP_LINE="  depfile = \$out.d"
@@ -115,6 +117,7 @@ cc = $CC
 objcopy = $OBJCOPY
 cflags = $CFLAGS
 ldflags = $LDFLAGS
+cppflags = $CPPFLAGS
 
 rule cc
   command = \$cc \$cflags $DEP_FLAGS  -c \$in -o \$out
@@ -163,6 +166,7 @@ target_ldflags() {
 target_cflags() {
 	local target="$1"
 	_ev "cflags_$target"
+	_ev "cppflags_$target"
 }
 
 # <target> <src-file>...
