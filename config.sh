@@ -169,14 +169,20 @@ target_dir() {
 # <target>
 target_ldflags() {
 	local target="$1"
-	_ev "ldflags_$target"
+	local v="$(var_name "$target")"
+	_ev "ldflags_$v:-"
+}
+
+var_name() {
+	echo "$1" | sed -e 's/-/_/'	
 }
 
 # <target>
 target_cflags() {
 	local target="$1"
-	_ev "cflags_$target"
-	_ev "cppflags_$target"
+	local v="$(var_name "$target")"
+	_ev "cflags_$v:-"
+	_ev "cppflags_$v:-"
 }
 
 # <target> <src-file>...
@@ -189,7 +195,7 @@ to_obj () {
 }
 
 _ev () {
-	eval echo "\${$1}"
+	eval printf "%s " "\${$1}"
 }
 
 config () {
@@ -253,7 +259,7 @@ EOF
 }
 
 # <target> <src>...
-bin () {
+bin() {
 	if [ "$#" -lt 2 ]; then
 		die "'bin $1' has to have some source"
 	fi
