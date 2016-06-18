@@ -105,6 +105,8 @@ CONFIG_H_GEN=./config_h_gen
 
 CONFIGS=""
 
+: ${CPPFLAGS=}
+
 # Check if compiler likes -MMD -MF
 if $CC $CFLAGS -MMD -MF /dev/null -c -x c /dev/null -o /dev/null >/dev/null 2>&1; then
 	DEP_LINE="  depfile = \$out.d"
@@ -125,6 +127,7 @@ cc = $CC
 objcopy = $OBJCOPY
 cflags = $CFLAGS
 ldflags = $LDFLAGS
+cppflags = $CPPFLAGS
 
 rule cc
   command = \$cc \$cflags $DEP_FLAGS  -c \$in -o \$out
@@ -157,13 +160,31 @@ EOF
 
 CONFIGURE_DEPS="$0"
 
+# <target>
+target_dir() {
+	local target="$1"
+	printf "%s" ".build-$target"
+}
+
+# <target>
+target_ldflags() {
+	local target="$1"
+	_ev "ldflags_$target"
+}
+
+# <target>
+target_cflags() {
+	local target="$1"
+	_ev "cflags_$target"
+	_ev "cppflags_$target"
+}
 
 # <target> <src-file>...
 to_obj () {
 	local target="$1"
 	shift
 	for i in "$@"; do
-		printf "%s " ".build-$target/$i.o"
+		printf "%s " "$(target_dir "$target")/$i.o"
 	done
 }
 
@@ -216,7 +237,7 @@ obj() {
 
 	>&5 cat <<EOF
 build $(to_obj "$target" "$s"): $act $s | $(e_if $CONFIG_H config.h)
-  cflags = \$cflags -I.build-$target
+  cflags = \$cflags -I$(target_dir "$target") $(target_cflags "$target")
 EOF
 }
 
@@ -227,6 +248,7 @@ bin_base () {
 
 	>&5 cat <<EOF
 build $target : ccld $@
+  ldflags = -L$(target_dir "$target") \$ldflags $(target_ldflags "$target")
 EOF
 }
 
@@ -256,7 +278,7 @@ EOF
 
 # <target> <src>...
 host_bin() {
-	local target="$1"	
+	local target="$1"
 	shift
 
 	for s in "$@"; do
