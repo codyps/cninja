@@ -264,8 +264,8 @@ bin () {
 		obj "$target" "$s"
 	done
 
-	bin_base "$target" $(to_obj "$out" "$@")
-	>&5 echo "default $out"
+	bin_base "$target" $(to_obj "$target" "$@")
+	>&5 echo "default $target"
 }
 
 # <target> <src>
