@@ -2,18 +2,28 @@
 set -eu
 
 D="$(dirname "$0")"
+: ${SRC_DIR:="$D"}
+: ${OBJ_DIR:="."}
 
-: ${CROSS_COMPILER:=}
 : ${HOST_CC:=cc}
-: ${CC:=${CROSS_COMPILER}cc}
-: ${OBJCOPY:=${CROSS_COMPILER}objcopy}
 : ${HOST_LDFLAGS:=}
 
+: ${CROSS_COMPILER:=}
+: ${CC:=${CROSS_COMPILER}cc}
+: ${OBJCOPY:=${CROSS_COMPILER}objcopy}
+
+# FIXME: do we need a env wrapper here? (yes)
+: ${HOST_PKGCONFIG:=pkg-config}
 : ${PKGCONFIG:=pkg-config}
-: ${WARN_FLAGS_C:="-Wstrict-prototypes -Wmissing-prototypes -Wold-style-definition -Wmissing-declarations -Wbad-function-cast"}
-: ${WARN_FLAGS:="-Wall -Wundef -Wshadow -Wcast-align -Wwrite-strings -Wextra -Werror=attributes -Wno-missing-field-initializers ${WARN_FLAGS_C}"}
+
+# XXX: convenience only
 : ${GIT_VER:=$(${GIT:-git} describe --dirty=+ --always 2>/dev/null || echo "+")}
 
+: ${WARN_FLAGS_C:="-Wstrict-prototypes -Wmissing-prototypes -Wold-style-definition -Wmissing-declarations -Wbad-function-cast"}
+: ${WARN_FLAGS:="-Wall -Wundef -Wshadow -Wcast-align -Wwrite-strings -Wextra -Werror=attributes -Wno-missing-field-initializers ${WARN_FLAGS_C}"}
+
+# XXX: handle for HOST too
+# XXX: consider parallelizing invocation here?
 if [ -n "${PKGCONFIG_LIBS:=}" ]; then
 	PKGCONFIG_CFLAGS="$(${PKGCONFIG} --cflags ${PKGCONFIG_LIBS})"
 	PKGCONFIG_LDFLAGS="$(${PKGCONFIG} --libs ${PKGCONFIG_LIBS})"
@@ -258,8 +268,9 @@ build $target : ccld_host $@
 EOF
 }
 
+# <target>
 host_run() {
-	>&2 echo "warning: we don't currently run tests"
+	>&2 echo "warning: NOT running $1"
 }
 
 # <target> <file>
@@ -269,7 +280,7 @@ add_run_test() {
 	local b=$(basename $f .c)
 
 	host_bin "$target/$b" "$f"
-	host_run "$target/$b" "$f"
+	host_run "$target/$b" 
 }
 
 # Add a set of tests based on source files in a given directory
@@ -308,7 +319,6 @@ add_test_dir() {
 			obj "$target" "$f"
 			>&5 echo "default $(to_obj "$target" "$f")"
 			add_run_test "$target" "$f"
-			>&2 echo "run test not supported, will only compile $f"
 			;;
 		api*.c)
 			>&2 echo "api test not supported, skipped $f"
