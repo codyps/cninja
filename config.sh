@@ -52,7 +52,7 @@ cflag_x () {
 	local cflags=$(eval printf "%s" "\${$1CFLAGS:-}")
 	shift
 	for i in "$@"; do
-		if_runs "$i " "" $cc $cflags -c -x c "$i" /dev/null -o /dev/null
+		if_runs "$i " "" $cc $cflags -x c "$i" /dev/null -o /dev/null
 	done
 }
 
@@ -65,7 +65,7 @@ cflag_first () {
 	local cflags=$(eval printf "%s" "\${$1CFLAGS:-}")
 	shift
 	for i in "$@"; do
-		if try_run $cc $cflags -c -x c "$i" /dev/null -o /dev/null; then
+		if try_run $cc $cflags -x c "$i" /dev/null -o /dev/null; then
 			echo "$i"
 			return
 		fi
