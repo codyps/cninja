@@ -207,7 +207,7 @@ config () {
 		configs="$configs $name"
 	done
 
-	echo "build config.h : combine $D/config_h/prefix.h $configs $D/config_h/suffix.h"
+	>&5 echo "build config.h : combine $D/config_h/prefix.h $configs $D/config_h/suffix.h"
 }
 
 if [ -e "config_h" ]; then
