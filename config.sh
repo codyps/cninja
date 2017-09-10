@@ -99,7 +99,7 @@ fi
 CFLAGS="-DCFG_GIT_VERSION=${GIT_VER} -I. ${LIB_CFLAGS} ${CFLAGS:-}"
 
 : ${LDFLAGS:="${COMMON_FLAGS}"}
-LDFLAGS="${LIB_LDFLAGS} ${LDFLAGS} ${DEBUG_FLAGS}"
+LDFLAGS="${LDFLAGS} ${DEBUG_FLAGS}"
 
 CONFIG_H_GEN=./config_h_gen
 
@@ -128,6 +128,7 @@ objcopy = $OBJCOPY
 cflags = $CFLAGS
 ldflags = $LDFLAGS
 cppflags = $CPPFLAGS
+libs = $LIB_LDFLAGS
 
 rule cc
   command = \$cc \$cflags $DEP_FLAGS  -c \$in -o \$out
@@ -145,7 +146,7 @@ rule ccld_host
   command = \$host_cc \$host_ldflags -o \$out \$in
 
 rule ccld
-  command = \$cc \$ldflags -o \$out \$in
+  command = \$cc \$ldflags -o \$out \$in \$libs
 
 rule config_h_frag
   command = ${CONFIG_H_GEN} \$in \$cc \$cflags \$ldflags > \$out
