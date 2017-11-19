@@ -47,12 +47,13 @@ if_runs () {
 # Given a series of flags for CC, echo (space seperated) the ones that the
 # compiler is happy with.
 # XXX: Note that this does mean flags with spaces in them won't work.
+EMPTY_MAIN="int main(void) { return 0; }"
 cflag_x () {
 	local cc=$(eval printf "%s" "\${$1CC}")
 	local cflags=$(eval printf "%s" "\${$1CFLAGS:-}")
 	shift
 	for i in "$@"; do
-		if_runs "$i " "" $cc $cflags -x c "$i" /dev/null -o /dev/null
+		printf "%s" "$EMPTY_MAIN" | if_runs "$i " "" $cc $cflags -x c "$i" - -o /dev/null
 	done
 }
 
