@@ -1,4 +1,5 @@
-void foo(char *f __attribute__((__nonnull__)));
+__attribute__((__nonnull__))
+void foo(void *);
 
 int main(void)
 {
